@@ -6,9 +6,9 @@ from flask import Flask
 class SQLiteDataManager(DataManagerInterface):
     def __init__(self, db_file_name):
         self.app = Flask(__name__) # creating the flask app
-        self.app.config['SQLALCHEMY_DATABASE_URI'] =f'sqlite:///{db_file_name}'
-        self.app.config['SQLALCHEMY_TRACK_MODIFICATION'] = False
-        self.db = SQLAlchemy(self.app) # initialize SQLAlchemy with the flask app
+        self.app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_file_name}'
+        self.app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+        db.init_app(self.app) # initialize SQLAlchemy with the flask app
 
     def get_all_users(self):
         users = User.query.all()
@@ -22,8 +22,8 @@ class SQLiteDataManager(DataManagerInterface):
     def add_user(self, user_name):
         new_user = User(name=user_name)
 
-        self.db.session.add(new_user)
-        self.db.session.commit()
+        db.session.add(new_user)
+        db.session.commit()
         print("New user has been added")
 
     def add_movie(self, movie_name, director_name, year, rating, user_id):
@@ -35,8 +35,8 @@ class SQLiteDataManager(DataManagerInterface):
             user_id=user_id
         )
 
-        self.db.session.add(new_movie)
-        self.db.session.commit()
+        db.session.add(new_movie)
+        db.session.commit()
         print("New Movie added")
 
     def update_movie(self, movie_id, new_director_name, new_year, new_rating):
@@ -47,13 +47,13 @@ class SQLiteDataManager(DataManagerInterface):
             movie.year = new_year
             movie.rating = new_rating
 
-        self.db.session.commit()
+        db.session.commit()
         print("Movie updated")
 
     def delete_movie(self, movie_id):
         movie_to_delete = Movie.query.filter_by(id=movie_id).first()
 
-        self.db.session.delete(movie_to_delete)
-        self.db.session.commit()
+        db.session.delete(movie_to_delete)
+        db.session.commit()
 
 

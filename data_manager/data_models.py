@@ -1,5 +1,4 @@
 from flask_sqlalchemy import SQLAlchemy
-from sqlite_data_manager import SQLiteDataManager
 
 db = SQLAlchemy()
 
