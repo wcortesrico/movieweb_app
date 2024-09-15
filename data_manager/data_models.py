@@ -2,6 +2,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
+
 class User(db.Model):
     __tablename__ = "users"
 
@@ -15,6 +16,7 @@ class User(db.Model):
 
     def __repr__(self):
         return f"User id: {self.id} User name: {self.name}"
+
 
 class Movie(db.Model):
     __tablename__ = "movies"
