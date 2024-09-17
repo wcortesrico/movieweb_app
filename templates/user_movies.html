@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> User-Movies </title>
+</head>
+
+<body>
+    <nav>
+        <a href="{{ url_for('add_movie', user_id=user) }}">Add Movie</a><br><br>
+    </nav>
+    <div>
+        {% for movie in movies %}
+        <img src="{{ movie.poster_url }}" alt="Movie Poster"/><br>
+        <h2>{{ movie.name }}</h2>
+        <h3>{{ movie.director }}</h3>
+        <h4> Rating: {{ movie.rating }}</h4>
+            <a
+                    href="{{ url_for('update_movie', movie_id=movie.id, user_id=movie.user_id) }}">Update
+            </a><br>
+        <a
+                    href="{{ url_for('delete_movie', user_id=movie.user_id, movie_id=movie.id) }}">Delete
+        </a>
+        <br><br><br><br>
+    </div>
+        {% endfor %}
+</body>
+</html>
