@@ -15,16 +15,25 @@ def home():
 
 @app.route('/users')
 def list_users():
-    users = data_manager.get_all_users()
+    users = []
+    try:
+        users = data_manager.get_all_users()
+    except IOError as e:
+        print("An IO error occurred: ", str(e))
 
     return render_template('users.html', users=users)
 
 
 @app.route('/users/<user_id>')
 def user_movies(user_id):
-    movies = data_manager.get_movies_user(int(user_id))
-
-    return render_template('user_movies.html', movies=movies, user=user_id)
+    movies = []
+    user = None
+    try:
+        movies = data_manager.get_movies_user(int(user_id))
+        user = data_manager.get_user_by_id(user_id)
+    except IOError as e:
+        print("An IO error ocurred: ", str(e))
+    return render_template('user_movies.html', movies=movies, user=user_id, users=user)
 
 
 @app.route('/add_user', methods=['GET', 'POST'])
@@ -38,7 +47,11 @@ def add_user():
 
 @app.route('/users/<user_id>/add_movie', methods=['GET', 'POST'])
 def add_movie(user_id):
-    movies = data_manager.get_movies_user(user_id)
+    movies = []
+    try:
+        movies = data_manager.get_movies_user(user_id)
+    except IOError as e:
+        print("An IO error occurred: ", str(e))
     if request.method == 'POST':
         movie_name = request.form['movie']
         movie_data = fetch_data(movie_name)
@@ -47,15 +60,22 @@ def add_movie(user_id):
         year = movie_data['Year']
         rating = movie_data['imdbRating']
         poster = movie_data['Poster']
-        data_manager.add_movie(movie_name=title, director_name=director, year=year,
-                               rating=rating, poster_url=poster, user_id=user_id)
+        try:
+            data_manager.add_movie(movie_name=title, director_name=director, year=year,
+                                   rating=rating, poster_url=poster, user_id=user_id)
+        except IOError as e:
+            print(" An IO errror occurred: ", str(e))
         return redirect(url_for('user_movies', movies=movies, user_id=user_id))
     return render_template('add_movie.html', user=user_id)
 
 
 @app.route('/users/<user_id>/update_movie/<movie_id>', methods=['GET', 'POST'])
 def update_movie(user_id, movie_id):
-    movie = data_manager.get_movie_by_id(movie_id)
+    movie = None
+    try:
+        movie = data_manager.get_movie_by_id(movie_id)
+    except IOError as e:
+        print("An IO error occurred: ", str(e))
     if request.method == 'POST':
         new_director = request.form.get('director')
         new_year = request.form.get('year')
@@ -67,14 +87,22 @@ def update_movie(user_id, movie_id):
 
 @app.route('/users/<user_id>/delete_movie/<movie_id>', methods=['GET', 'POST'])
 def delete_movie(user_id, movie_id):
-    movie = data_manager.get_movie_by_id(movie_id)
-    movies = data_manager.get_movies_user(user_id)
-    print(movie_id)
-    print(user_id)
+    movie = None
+    movies = []
+    try:
+        movie = data_manager.get_movie_by_id(movie_id)
+        movies = data_manager.get_movies_user(user_id)
+    except IOError as e:
+        print("An IO error occurred:", str(e))
     if request.method == 'POST':
         data_manager.delete_movie(movie_id)
         return redirect(url_for('user_movies', movies=movies, user_id=user_id))
     return render_template('delete_movie.html', movie=movie)
+
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
 
 
 if __name__ == "__main__":

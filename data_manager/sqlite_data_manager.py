@@ -81,3 +81,8 @@ class SQLiteDataManager(DataManagerInterface):
             movie = Movie.query.filter_by(id=movie_id).first()
             return movie
 
+    def get_user_by_id(self, user_id):
+        with self.app.app_context():
+            user = User.query.filter_by(id=user_id).first()
+            return user
+
