@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+        <h4> Are you sure you want to delete? {{ movie.name }} </h4>
+       <form action="/users/{{ movie.user_id }}/delete_movie/{{ movie.id }}" method="POST">
+            <input type="hidden" name="{{ movie.id }}" value="{{ movie.id }}"><br>
+            <button type="submit">Delete movie</button><br><br><br><br>
+        </form>
+</body>
+</html>
